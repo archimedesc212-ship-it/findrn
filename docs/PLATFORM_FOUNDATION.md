@@ -2,6 +2,20 @@
 
 This repository is being evolved from a static landing page into a global services marketplace.
 
+## Experience direction
+
+Use the Apple Store India page as a UX reference, not a visual or content template. Borrow the principles that suit a service marketplace:
+
+- A calm, compact navigation bar with clear discovery categories.
+- Editorial, large-format feature sections with one clear message and a focused action.
+- Horizontal discovery rails and well-spaced category cards instead of dense directories.
+- Short benefit sections that explain trust, support and how the marketplace works.
+- Consistent typography, whitespace, responsive layouts and restrained transitions.
+
+Keep Findrn's own green identity, F mark, copy and service-marketplace information architecture. Do not copy Apple's logo, product photography, text or branded interface.
+
+The intro should appear on the first visit in a tab, use a short restrained logo reveal, offer Skip, and avoid replaying on a same-tab refresh. A minimal two-note sound is opt-in because browsers generally block sound that starts without a user gesture. The sign-in preview includes email/password, password visibility, confirm password, forgot-password and sign-in/sign-up navigation; it remains non-functional until Supabase Auth is connected.
+
 ## Product roles
 
 - **Customer** — discover services, compare approved professionals, request and manage bookings, message the provider, pay through a supported payment processor, and review completed work.
