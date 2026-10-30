@@ -57,13 +57,21 @@ create table if not exists public.provider_profiles (
   user_id uuid primary key references public.profiles(id) on delete cascade,
   business_name text not null,
   bio text not null default '',
-  phone text,
   country_code text,
   city text,
   service_area text,
   status public.provider_status not null default 'pending',
   is_verified boolean not null default false,
   reviewed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Keep direct contact details out of the publicly readable provider profile.
+create table if not exists public.provider_private_details (
+  user_id uuid primary key references public.provider_profiles(user_id) on delete cascade,
+  phone text,
+  contact_email text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -415,6 +423,7 @@ for each row execute function public.findrn_set_updated_at();
 alter table public.profiles enable row level security;
 alter table public.categories enable row level security;
 alter table public.provider_profiles enable row level security;
+alter table public.provider_private_details enable row level security;
 alter table public.services enable row level security;
 alter table public.bookings enable row level security;
 alter table public.booking_events enable row level security;
@@ -451,6 +460,18 @@ create policy "Users submit own provider profile" on public.provider_profiles
 for insert to authenticated with check (user_id = auth.uid() and status = 'pending' and is_verified = false);
 drop policy if exists "Owners edit own provider profile" on public.provider_profiles;
 create policy "Owners edit own provider profile" on public.provider_profiles
+for update to authenticated using (user_id = auth.uid() or public.findrn_is_admin())
+with check (user_id = auth.uid() or public.findrn_is_admin());
+
+-- Private provider contact details: only the provider and admins can read/update.
+drop policy if exists "Provider private details owner/admin read" on public.provider_private_details;
+create policy "Provider private details owner/admin read" on public.provider_private_details
+for select to authenticated using (user_id = auth.uid() or public.findrn_is_admin());
+drop policy if exists "Provider private details owner/admin insert" on public.provider_private_details;
+create policy "Provider private details owner/admin insert" on public.provider_private_details
+for insert to authenticated with check (user_id = auth.uid() or public.findrn_is_admin());
+drop policy if exists "Provider private details owner/admin update" on public.provider_private_details;
+create policy "Provider private details owner/admin update" on public.provider_private_details
 for update to authenticated using (user_id = auth.uid() or public.findrn_is_admin())
 with check (user_id = auth.uid() or public.findrn_is_admin());
 
@@ -557,6 +578,7 @@ grant usage on schema public to anon, authenticated;
 grant select on public.categories, public.provider_profiles, public.services, public.reviews to anon, authenticated;
 grant select, update on public.profiles to authenticated;
 grant select, insert, update on public.provider_profiles to authenticated;
+grant select, insert, update on public.provider_private_details to authenticated;
 grant select, insert, update, delete on public.services to authenticated;
 grant select, insert on public.bookings to authenticated;
 grant select on public.booking_events, public.conversations, public.conversation_members to authenticated;
