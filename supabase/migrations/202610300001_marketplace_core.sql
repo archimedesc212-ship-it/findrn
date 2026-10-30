@@ -512,7 +512,7 @@ for insert to authenticated with check (
   and exists (
     select 1 from public.services s
     join public.provider_profiles p on p.user_id = s.provider_id
-    where s.id = service_id and s.provider_id = provider_id
+    where s.id = bookings.service_id and s.provider_id = bookings.provider_id
       and s.status = 'published' and p.status = 'approved'
   )
 );
@@ -559,7 +559,7 @@ for insert to authenticated with check (
   and exists (
     select 1 from public.bookings b
     where b.id = booking_id and b.customer_id = auth.uid()
-      and b.provider_id = provider_id and b.status = 'completed'
+      and b.provider_id = reviews.provider_id and b.status = 'completed'
   )
 );
 
