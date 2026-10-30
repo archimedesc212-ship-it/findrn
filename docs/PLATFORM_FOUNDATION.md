@@ -24,7 +24,7 @@ A role is an authorization boundary, not just a different dashboard. Never trust
 |---|---|
 | Identity | `profiles` |
 | Catalogue | `categories`, `services` |
-| Provider onboarding | `provider_profiles` |
+| Provider onboarding | `provider_profiles`, `provider_private_details` |
 | Booking | `bookings`, `booking_events` |
 | Messaging | `conversations`, `conversation_members`, `messages` |
 | Trust | `reviews` |
